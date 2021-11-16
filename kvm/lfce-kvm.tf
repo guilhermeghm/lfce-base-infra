@@ -16,7 +16,6 @@ resource "libvirt_volume" "lfce_image" {
 resource "libvirt_volume" "os_volume" {
   name           = "os_volume-${count.index}"
   base_volume_id = libvirt_volume.lfce_image.id
-#  size           = 6442450944
   count          = var.count_vms
   pool           = libvirt_pool.lfce_pool.name
 }

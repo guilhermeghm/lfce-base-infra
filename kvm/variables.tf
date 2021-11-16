@@ -2,7 +2,6 @@
 variable "dns_domain" {
   description = "DNS domain name"
   default     = "lfce.local"
-
 }
 
 #Set the CIDR.
