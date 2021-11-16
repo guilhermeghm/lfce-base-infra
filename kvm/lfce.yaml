@@ -1,0 +1,33 @@
+#cloud-config
+write_files:
+- path: /tmp/lfce.sh
+  content: |
+    #!/bin/bash
+     
+    sudo yum update && sudo yum upgrade -y
+    
+    #Additional package for troubleshooting.
+    sudo yum install -y net-tools 
+
+    #To keep the SSH session alive.
+    sudo echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config
+    systemctl restart sshd
+
+runcmd:
+- ["sh", "/tmp/lfce.sh"]
+
+#Define the CentOS user.
+users:
+  - name: centos 
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFp8247m7c8PDSuSGrHBSiJ1vBv6pJyDuSu4JELflcB2RVJSKi/LWJMP0lYcx3LIZlTChPU+CYCw8LoMZEiEwt3mROMrktZtriG+X3DnpPqWh/npxlhnI8fqoQjJrJHgexKdI5ISTVCeqzhHXVVp4TZTlir2fVIDmEFjrhG3Gg4I5aZ9AjTzZhSLLozv2Rj7k1V2u9fa6dR/5g6OMjcY0QtFVbrdssNdRjFNd/t+/uUGyeIo4evSlJWRHySXj85YrOaiV0owUzbS6Gj5TROBJGbsagRXe9BXHZPEmH8k6DgB+Kr/k57pMRch8O8PLjVS6KNcYOGKviN9k8opwh/XVJDGgAudmc0yBoIB6kna9ZMnBxtdgoC9pgmA/Nh8/FTI5KhicnHBkTwFgwFKb/0ExCGHM41mexn8WnXoZwIlmiYDnY7E7g0BudQKyay3KCsD+RN2xNzY87K8RoAHUw5kbq4HTC5BBLsb5zytT44R11PaE9Z/yR4vwJ+QmdFK0BnBc=
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    shell: /bin/bash
+    groups: wheel
+
+#Workaround to reboot the VM to force it to get hostname via DHCP.
+power_state:
+  delay: now
+  mode: reboot
+  message: Reboot to apply new hostname
+  timeout: 10
