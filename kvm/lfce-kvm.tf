@@ -20,6 +20,24 @@ resource "libvirt_volume" "os_volume" {
   pool           = libvirt_pool.lfce_pool.name
 }
 
+#Create the disk for LVM exercises.
+resource "libvirt_volume" "lvm_volume" {
+  name           = "lvm_volume-${count.index}"
+  count          = var.count_vms
+  pool           = libvirt_pool.lfce_pool.name
+  format         = "qcow2"
+  size           = 10737418239
+}
+
+#Create the disk for LVM exercises.
+resource "libvirt_volume" "smb_volume" {
+  name           = "smb_volume-${count.index}"
+  count          = var.count_vms
+  pool           = libvirt_pool.lfce_pool.name
+  format         = "qcow2"
+  size           = 5368709119
+}
+
 #Create a new network for the VMs.
 resource "libvirt_network" "lfce_network" {
   name      = "lfce-network"
@@ -60,6 +78,14 @@ resource "libvirt_domain" "lfce_domain" {
 
   disk {
     volume_id = element(libvirt_volume.os_volume.*.id, count.index)
+  }
+
+  disk {
+    volume_id = element(libvirt_volume.lvm_volume.*.id, count.index)
+  }
+
+  disk {
+    volume_id = element(libvirt_volume.smb_volume.*.id, count.index)
   }
 
   network_interface {

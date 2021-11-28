@@ -7,7 +7,7 @@ write_files:
     sudo yum update && sudo yum upgrade -y
     
     #Additional package for troubleshooting.
-    sudo yum install -y net-tools 
+    sudo yum install -y net-tools vim
 
     #To keep the SSH session alive.
     sudo echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config
